@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Cleanup script for the Delivault monorepo
+ * Cleanup script for the ContraLock monorepo
  * This script helps identify and remove dead code and redundant files
  */
 
@@ -88,7 +88,7 @@ function checkDuplicateFile(primary, duplicates) {
 }
 
 function runAnalysis() {
-  console.log('🔍 Starting Delivault monorepo cleanup analysis...\n');
+  console.log('🔍 Starting ContraLock monorepo cleanup analysis...\n');
   
   console.log('📋 Checking empty directories...');
   let allEmpty = true;

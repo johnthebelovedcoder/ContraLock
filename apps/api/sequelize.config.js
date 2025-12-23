@@ -1,7 +1,7 @@
 const path = require('path');
 
 // Get the path to the SQLite database file
-const dbPath = path.join(__dirname, '..', '..', 'data', 'delivault.sqlite');
+const dbPath = path.join(__dirname, '..', '..', 'data', 'contralock.sqlite');
 
 module.exports = {
   development: {

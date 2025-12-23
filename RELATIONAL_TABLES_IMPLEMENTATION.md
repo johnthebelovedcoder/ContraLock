@@ -1,7 +1,7 @@
 # Relational Tables for JSON Fields Implementation
 
 ## Overview
-This document outlines the implementation of converting JSON fields to proper relational tables in the Delivault platform. This approach addresses the issues with JSON fields including unbounded growth, querying difficulties, and data integrity concerns.
+This document outlines the implementation of converting JSON fields to proper relational tables in the ContraLock platform. This approach addresses the issues with JSON fields including unbounded growth, querying difficulties, and data integrity concerns.
 
 ## Current JSON Fields to Convert
 

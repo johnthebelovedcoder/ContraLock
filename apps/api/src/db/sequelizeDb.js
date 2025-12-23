@@ -2,7 +2,7 @@ const { Sequelize } = require('sequelize');
 const path = require('path');
 
 // Get the path to the SQLite database file
-const dbPath = path.join(process.cwd(), '..', '..', 'data', 'delivault.sqlite');
+const dbPath = path.join(process.cwd(), '..', '..', 'data', 'contralock.sqlite');
 
 // Initialize Sequelize with SQLite
 const sequelize = new Sequelize({

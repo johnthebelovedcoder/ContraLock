@@ -23,8 +23,8 @@ const configSchema = {
   EMAIL_USER: { type: 'string', required: false },
   EMAIL_PASS: { type: 'string', required: false },
   EMAIL_SECURE: { type: 'boolean', default: false, required: false },
-  EMAIL_FROM: { type: 'string', required: false, default: 'noreply@delivault.com' },
-  EMAIL_FROM_NAME: { type: 'string', required: false, default: 'Delivault' },
+  EMAIL_FROM: { type: 'string', required: false, default: 'noreply@contralock.com' },
+  EMAIL_FROM_NAME: { type: 'string', required: false, default: 'ContraLock' },
   
   // Frontend settings
   FRONTEND_URL: { type: 'string', required: false, default: 'http://localhost:3000' },

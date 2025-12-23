@@ -1,5 +1,5 @@
 /**
- * Database Indexing Script for DeliVault
+ * Database Indexing Script for ContraLock
  * This script adds proper indexes to the database to optimize common queries
  */
 

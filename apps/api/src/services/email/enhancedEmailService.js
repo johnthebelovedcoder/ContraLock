@@ -243,8 +243,8 @@ class EnhancedEmailService {
       // Prepare mail options
       const mailOptions = {
         from: {
-          name: process.env.EMAIL_FROM_NAME || 'Delivault',
-          address: process.env.EMAIL_FROM || 'noreply@delivault.com'
+          name: process.env.EMAIL_FROM_NAME || 'ContraLock',
+          address: process.env.EMAIL_FROM || 'noreply@contralock.com'
         },
         to,
         subject,
@@ -252,7 +252,7 @@ class EnhancedEmailService {
         ...(text && { text }),
         // Add headers for better deliverability
         headers: {
-          'X-Mailer': 'Delivault/1.0',
+          'X-Mailer': 'ContraLock/1.0',
           'X-Priority': 3,
           'X-MSMail-Priority': 'Normal',
           'Importance': 'Normal',
@@ -336,7 +336,7 @@ class EnhancedEmailService {
       user: user,
       verificationLink,
       unsubscribeLink,
-      siteName: 'Delivault',
+      siteName: 'ContraLock',
       year: new Date().getFullYear()
     };
 
@@ -354,13 +354,13 @@ class EnhancedEmailService {
       user: user,
       dashboardLink: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/dashboard`,
       helpLink: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/help`,
-      siteName: 'Delivault',
+      siteName: 'ContraLock',
       year: new Date().getFullYear()
     };
 
     return await this.sendEmail(
       user.email,
-      'Welcome to Delivault!',
+      'Welcome to ContraLock!',
       'welcome',
       templateData
     );
@@ -374,7 +374,7 @@ class EnhancedEmailService {
       amount: amount,
       transactionId: transactionId,
       dashboardLink: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/dashboard`,
-      siteName: 'Delivault',
+      siteName: 'ContraLock',
       year: new Date().getFullYear()
     };
 
@@ -426,7 +426,7 @@ class EnhancedEmailService {
       statusColor: statusColor,
       message: message,
       dashboardLink: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/dashboard/projects/${project._id}`,
-      siteName: 'Delivault',
+      siteName: 'ContraLock',
       year: new Date().getFullYear()
     };
 
@@ -446,7 +446,7 @@ class EnhancedEmailService {
       dispute: dispute,
       resolution: resolution,
       dashboardLink: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/dashboard/disputes/${dispute._id}`,
-      siteName: 'Delivault',
+      siteName: 'ContraLock',
       year: new Date().getFullYear()
     };
 
@@ -465,7 +465,7 @@ class EnhancedEmailService {
       client: client,
       project: project,
       acceptLink: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/invitations?project=${project._id}`,
-      siteName: 'Delivault',
+      siteName: 'ContraLock',
       year: new Date().getFullYear()
     };
 
@@ -522,7 +522,7 @@ class EnhancedEmailService {
   // Send email with priority
   async sendPriorityEmail(to, subject, templateName, templateData) {
     const mailOptions = {
-      from: process.env.EMAIL_FROM || 'noreply@delivault.com',
+      from: process.env.EMAIL_FROM || 'noreply@contralock.com',
       to,
       subject,
       priority: 'high',

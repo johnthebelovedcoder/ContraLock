@@ -325,7 +325,7 @@ const emailJobProcessor = async (job) => {
 
     // Send email
     const info = await transporter.sendMail({
-      from: process.env.EMAIL_FROM || 'noreply@delivault.com',
+      from: process.env.EMAIL_FROM || 'noreply@contralock.com',
       to,
       subject: emailTemplate.subject,
       html: emailTemplate.html,

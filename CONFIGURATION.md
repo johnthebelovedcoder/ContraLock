@@ -1,4 +1,4 @@
-# Delivault - Full Stack Configuration
+# ContraLock - Full Stack Configuration
 
 ## Project Structure
 - `apps/web` - Frontend Next.js application
@@ -22,7 +22,7 @@ npm install
 ```env
 PORT=3001
 DB_TYPE=sqlite
-DB_PATH=./data/delivault.sqlite
+DB_PATH=./data/contralock.sqlite
 JWT_SECRET=your-super-secret-jwt-key-change-in-production
 REFRESH_TOKEN_SECRET=your-super-secret-refresh-token-key-change-in-production
 STRIPE_SECRET_KEY=sk_test_your_stripe_secret_key

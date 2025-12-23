@@ -1,9 +1,9 @@
 /**
- * Main test entry point to run all unit tests for Delivault
+ * Main test entry point to run all unit tests for ContraLock
  * This file orchestrates the complete test suite
  */
 
-describe('Delivault Complete Test Suite', () => {
+describe('ContraLock Complete Test Suite', () => {
   describe('Service Layer Tests', () => {
     require('./services/twoFactorAuthService.test.js');
     require('./services/fraudDetectionService.test.js');

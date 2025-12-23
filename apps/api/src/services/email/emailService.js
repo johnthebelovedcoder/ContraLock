@@ -43,7 +43,7 @@ class EmailService {
       }
 
       const mailOptions = {
-        from: process.env.EMAIL_FROM || 'noreply@delivault.com',
+        from: process.env.EMAIL_FROM || 'noreply@contralock.com',
         to,
         subject,
         html,

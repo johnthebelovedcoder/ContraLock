@@ -38,7 +38,7 @@ function getCorsConfigForEnv(environment) {
       ]
     },
     staging: {
-      origin: process.env.CORS_ALLOWED_ORIGINS?.split(',') || [process.env.FRONTEND_URL || 'https://staging.delivault.com'],
+      origin: process.env.CORS_ALLOWED_ORIGINS?.split(',') || [process.env.FRONTEND_URL || 'https://staging.contralock.com'],
       credentials: true,
       optionsSuccessStatus: 200,
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
@@ -65,7 +65,7 @@ function getCorsConfigForEnv(environment) {
       ]
     },
     production: {
-      origin: process.env.CORS_ALLOWED_ORIGINS?.split(',') || [process.env.FRONTEND_URL || 'https://delivault.com'],
+      origin: process.env.CORS_ALLOWED_ORIGINS?.split(',') || [process.env.FRONTEND_URL || 'https://contralock.com'],
       credentials: true,
       optionsSuccessStatus: 200,
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],

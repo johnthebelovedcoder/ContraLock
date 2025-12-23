@@ -46,7 +46,7 @@ class ErrorMonitoringService {
       const errorId = uuidv4();
       const timestamp = new Date().toISOString();
       const environment = process.env.NODE_ENV || 'development';
-      const service = process.env.SERVICE_NAME || 'delivault-api';
+      const service = process.env.SERVICE_NAME || 'contralock-api';
 
       // Create structured error object
       const errorObject = {

@@ -4,7 +4,7 @@ const path = require('path');
 // Set the working directory to the API app
 const apiDir = path.join(__dirname, '..');
 
-console.log('Setting up Delivault database...');
+console.log('Setting up ContraLock database...');
 
 try {
   console.log('Running database migrations...');

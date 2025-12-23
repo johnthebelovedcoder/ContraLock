@@ -90,7 +90,7 @@ export const mockUsers: User[] = [
   },
   {
     id: 'user-3',
-    email: 'admin@delivault.com',
+    email: 'admin@contralock.com',
     firstName: 'Admin',
     lastName: 'User',
     role: 'admin',

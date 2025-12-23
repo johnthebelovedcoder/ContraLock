@@ -73,7 +73,7 @@ class NotificationService {
       }
 
       const mailOptions = {
-        from: process.env.FROM_EMAIL || 'noreply@delivault.com',
+        from: process.env.FROM_EMAIL || 'noreply@contralock.com',
         to: recipient,
         subject,
         html
@@ -125,7 +125,7 @@ class NotificationService {
       <p>Your payment of $${(data.amount / 100).toFixed(2)} for project "${data.project.title}" has been successfully processed.</p>
       <p>Funds are now securely held in escrow and will be released to the freelancer upon milestone completion and approval.</p>
       <p>Transaction ID: ${data.transactionId}</p>
-      <p>Thank you for using Delivault!</p>
+      <p>Thank you for using ContraLock!</p>
     `;
   }
 

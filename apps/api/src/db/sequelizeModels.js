@@ -37,7 +37,7 @@ if (environment === 'production' || process.env.DATABASE_URL) {
   // ../ = apps/
   // ../ = PROJECT_ROOT
   const projectRoot = path.join(__dirname, '..', '..', '..', '..');
-  const dbPath = path.join(projectRoot, 'data', 'delivault.sqlite');
+  const dbPath = path.join(projectRoot, 'data', 'contralock.sqlite');
 
   // Ensure the directory exists
   const dbDir = path.dirname(dbPath);

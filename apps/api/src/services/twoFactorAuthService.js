@@ -7,8 +7,8 @@ class TwoFactorAuthService {
   // Generate a 2FA secret for a user
   async generateSecret(userId) {
     const secret = speakeasy.generateSecret({
-      name: `Delivault (${process.env.NODE_ENV !== 'production' ? 'DEV' : 'PROD'})`,
-      issuer: 'Delivault',
+      name: `ContraLock (${process.env.NODE_ENV !== 'production' ? 'DEV' : 'PROD'})`,
+      issuer: 'ContraLock',
       length: 32
     });
 
