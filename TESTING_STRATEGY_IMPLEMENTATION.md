@@ -1336,7 +1336,7 @@ jobs:
         image: postgres:14
         env:
           POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: delivault_test
+          POSTGRES_DB: contralock_test
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -1372,7 +1372,7 @@ jobs:
         DB_TYPE: postgresql
         DB_HOST: localhost
         DB_PORT: 5432
-        DB_NAME: delivault_test
+        DB_NAME: contralock_test
         DB_USER: postgres
         DB_PASS: postgres
 

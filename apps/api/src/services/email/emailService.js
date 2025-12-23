@@ -97,20 +97,20 @@ class EmailService {
       <body>
         <div class="container">
           <div class="header">
-            <h1>Welcome to Delivault!</h1>
+            <h1>Welcome to ContraLock!</h1>
           </div>
           <div class="content">
             <p>Hello ${user.firstName || user.email},</p>
-            <p>Thank you for registering with Delivault. To get started, please verify your email address by clicking the button below:</p>
+            <p>Thank you for registering with ContraLock. To get started, please verify your email address by clicking the button below:</p>
             <center><a href="${verificationLink}" class="button">Verify Email</a></center>
             <p>If you cannot click the button, copy and paste this link into your browser:</p>
             <p>${verificationLink}</p>
             <p>This link will expire in 24 hours.</p>
-            <p>Best regards,<br>The Delivault Team</p>
+            <p>Best regards,<br>The ContraLock Team</p>
           </div>
           <div class="footer">
-            <p>This email was sent to ${user.email} because you signed up for Delivault.</p>
-            <p>© 2025 Delivault. All rights reserved.</p>
+            <p>This email was sent to ${user.email} because you signed up for ContraLock.</p>
+            <p>© 2025 ContraLock. All rights reserved.</p>
           </div>
         </div>
       </body>
@@ -122,15 +122,15 @@ class EmailService {
 
   // Send welcome email
   async sendWelcomeEmail(user) {
-    const subject = 'Welcome to Delivault!';
-    
+    const subject = 'Welcome to ContraLock!';
+
     const html = `
       <!DOCTYPE html>
       <html lang="en">
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Welcome to Delivault</title>
+        <title>Welcome to ContraLock</title>
         <style>
           body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
           .container { max-width: 600px; margin: 0 auto; padding: 20px; }
@@ -163,11 +163,11 @@ class EmailService {
       <body>
         <div class="container">
           <div class="header">
-            <h1>Welcome to Delivault, ${user.firstName || 'New User'}!</h1>
+            <h1>Welcome to ContraLock, ${user.firstName || 'New User'}!</h1>
           </div>
           <div class="content">
             <p>We're excited to have you join our community of freelancers and clients!</p>
-            
+
             <div class="feature-list">
               <h3>How to get started:</h3>
               <ul>
@@ -175,16 +175,16 @@ class EmailService {
                 <li><strong>For Clients:</strong> Post your project, find skilled freelancers, and pay securely</li>
               </ul>
             </div>
-            
-            <p>Delivault ensures secure, milestone-based payments that protect both freelancers and clients through our escrow system.</p>
+
+            <p>ContraLock ensures secure, milestone-based payments that protect both freelancers and clients through our escrow system.</p>
             
             <p>Have questions? Visit our <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/help">Help Center</a> or contact our team.</p>
-            
-            <p>Best regards,<br>The Delivault Team</p>
+
+            <p>Best regards,<br>The ContraLock Team</p>
           </div>
           <div class="footer">
-            <p>This email was sent to ${user.email} because you signed up for Delivault.</p>
-            <p>© 2025 Delivault. All rights reserved.</p>
+            <p>This email was sent to ${user.email} because you signed up for ContraLock.</p>
+            <p>© 2025 ContraLock. All rights reserved.</p>
           </div>
         </div>
       </body>
@@ -257,12 +257,12 @@ class EmailService {
             <p>You can track the progress of this project in your dashboard.</p>
             
             <p>Questions? Visit <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/dashboard">your dashboard</a>.</p>
-            
-            <p>Best regards,<br>The Delivault Team</p>
+
+            <p>Best regards,<br>The ContraLock Team</p>
           </div>
           <div class="footer">
-            <p>This email was sent to ${user.email} regarding your Delivault project.</p>
-            <p>© 2025 Delivault. All rights reserved.</p>
+            <p>This email was sent to ${user.email} regarding your ContraLock project.</p>
+            <p>© 2025 ContraLock. All rights reserved.</p>
           </div>
         </div>
       </body>
@@ -360,12 +360,12 @@ class EmailService {
             <p>You can view the full project details in your dashboard.</p>
             
             <p><a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/dashboard/projects/${project._id}">View Project</a></p>
-            
-            <p>Best regards,<br>The Delivault Team</p>
+
+            <p>Best regards,<br>The ContraLock Team</p>
           </div>
           <div class="footer">
-            <p>This email was sent to ${user.email} regarding your Delivault project.</p>
-            <p>© 2025 Delivault. All rights reserved.</p>
+            <p>This email was sent to ${user.email} regarding your ContraLock project.</p>
+            <p>© 2025 ContraLock. All rights reserved.</p>
           </div>
         </div>
       </body>
@@ -439,12 +439,12 @@ class EmailService {
             ` : ''}
             
             <p>Questions? Contact our support team or visit your <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/dashboard">dashboard</a>.</p>
-            
-            <p>Best regards,<br>The Delivault Team</p>
+
+            <p>Best regards,<br>The ContraLock Team</p>
           </div>
           <div class="footer">
-            <p>This email was sent to ${user.email} regarding a Delivault dispute.</p>
-            <p>© 2025 Delivault. All rights reserved.</p>
+            <p>This email was sent to ${user.email} regarding a ContraLock dispute.</p>
+            <p>© 2025 ContraLock. All rights reserved.</p>
           </div>
         </div>
       </body>
@@ -519,12 +519,12 @@ class EmailService {
             
             <p>If you cannot click the button, copy and paste this link into your browser:</p>
             <p>${acceptLink}</p>
-            
-            <p>Best regards,<br>The Delivault Team</p>
+
+            <p>Best regards,<br>The ContraLock Team</p>
           </div>
           <div class="footer">
-            <p>This email was sent to you regarding a project invitation on Delivault.</p>
-            <p>© 2025 Delivault. All rights reserved.</p>
+            <p>This email was sent to you regarding a project invitation on ContraLock.</p>
+            <p>© 2025 ContraLock. All rights reserved.</p>
           </div>
         </div>
       </body>
@@ -596,12 +596,12 @@ class EmailService {
             <p>Check your <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/dashboard">dashboard</a> for full details.</p>
             
             <p>Thank you for your excellent work!</p>
-            
-            <p>Best regards,<br>The Delivault Team</p>
+
+            <p>Best regards,<br>The ContraLock Team</p>
           </div>
           <div class="footer">
             <p>This email was sent to ${freelancer.email} regarding a payment release.</p>
-            <p>© 2025 Delivault. All rights reserved.</p>
+            <p>© 2025 ContraLock. All rights reserved.</p>
           </div>
         </div>
       </body>

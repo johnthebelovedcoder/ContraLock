@@ -8,7 +8,7 @@ import StoreProvider from "@/lib/store/StoreProvider";
 const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
-  title: "Delivault - Secure Freelance Escrow Platform",
+  title: "ContraLock - Secure Freelance Escrow Platform",
   description: "A milestone-based payment platform where clients deposit funds upfront, and payments are released when freelancers complete specific milestones.",
 };
 

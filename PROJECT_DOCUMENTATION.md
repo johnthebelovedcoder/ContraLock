@@ -90,7 +90,7 @@ The project follows a monorepo architecture using pnpm and Turbo for efficient d
 ## Project Structure
 
 ```
-delivault/
+contralock/
 ├── apps/
 │   ├── web/           # Next.js frontend application
 │   ├── api/           # Express.js backend API
@@ -636,7 +636,7 @@ The AI service provides intelligent features to enhance the platform experience,
 #### Root Directory (.env)
 ```env
 NODE_ENV=development
-DATABASE_URL=file:./delivault.sqlite
+DATABASE_URL=file:./contralock.sqlite
 SECRET_KEY=your-super-secret-key-change-in-production
 ```
 
@@ -644,7 +644,7 @@ SECRET_KEY=your-super-secret-key-change-in-production
 ```env
 PORT=3001
 DB_TYPE=sqlite
-DB_PATH=./data/delivault.sqlite
+DB_PATH=./data/contralock.sqlite
 JWT_SECRET=your-super-secret-jwt-key-change-in-production
 REFRESH_TOKEN_SECRET=your-super-secret-refresh-token-key-change-in-production
 STRIPE_SECRET_KEY=sk_test_your_stripe_secret_key
@@ -711,8 +711,8 @@ CACHE_TTL_SECONDS=300
 #### 1. Repository Setup
 ```bash
 # Clone the repository
-git clone https://github.com/your-organization/delivault.git
-cd delivault
+git clone https://github.com/your-organization/contralock.git
+cd contralock
 
 # Install dependencies using pnpm (recommended)
 pnpm install
@@ -737,6 +737,33 @@ npm install
 cd ../web
 npm install
 # Configure .env.local file
+
+### Mock Data System
+
+The project includes a comprehensive mock data system that allows for development and testing without backend services.
+
+#### Features
+- Complete mock data for users, projects, milestones, transactions, and disputes
+- Realistic scenarios with detailed information
+- Full API service mocking capabilities
+- Automatic switching between mock and real API based on configuration
+
+#### Configuration
+- Set `NEXT_PUBLIC_USE_MOCK_DATA=true` in your environment
+- Or enable via localStorage: `localStorage.setItem('useMockData', 'true')`
+- Enabled by default in development mode
+
+#### Dispute Mock Data
+New comprehensive mock data has been added for dispute scenarios including:
+
+- 8 different dispute types covering common real-world scenarios
+- Detailed evidence files of various types (PDF, PNG, ZIP, MP4, DOCX)
+- Communication logs between parties
+- AI analysis and resolution recommendations
+- Multiple dispute statuses and phases
+- Mediator and arbitrator assignments
+
+The mock dispute data is available through the `getMockDisputes()` function and is automatically used when mock mode is enabled.
 ```
 
 #### 3. Running the Development Environment
@@ -998,7 +1025,7 @@ mkdir -p apps/api/data
 chmod 755 apps/api/data
 
 # Verify SQLite path in .env
-DB_PATH=./data/delivault.sqlite
+DB_PATH=./data/contralock.sqlite
 ```
 
 #### 2. API Service Not Starting
@@ -1145,6 +1172,6 @@ cd apps/api && npm install --force
 
 ## Conclusion
 
-Delivault represents a comprehensive solution to the challenges facing the freelance market, combining robust technical architecture with innovative features to create a trustworthy platform for client-freelancer relationships. The monorepo approach enables efficient development while maintaining separation of concerns between the frontend, backend, and AI services.
+ContraLock represents a comprehensive solution to the challenges facing the freelance market, combining robust technical architecture with innovative features to create a trustworthy platform for client-freelancer relationships. The monorepo approach enables efficient development while maintaining separation of concerns between the frontend, backend, and AI services.
 
 This documentation serves as a complete guide to understanding, developing, and maintaining the platform, covering everything from initial setup to production deployment and troubleshooting.

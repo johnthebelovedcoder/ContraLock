@@ -1,8 +1,8 @@
-# Delivault Email Notification System
+# ContraLock Email Notification System
 
 ## Overview
 
-The Delivault Email Notification System provides comprehensive transactional and alert email capabilities for the platform. It supports various notification types with professionally designed HTML templates to ensure a consistent and trustworthy user experience.
+The ContraLock Email Notification System provides comprehensive transactional and alert email capabilities for the platform. It supports various notification types with professionally designed HTML templates to ensure a consistent and trustworthy user experience.
 
 ## Architecture
 

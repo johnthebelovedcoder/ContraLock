@@ -455,17 +455,16 @@ const Dispute = sequelize.define('Dispute', {
   },
   status: {
     type: DataTypes.ENUM(
-      'PENDING_REVIEW',    // Initial state, awaiting system review
-      'IN_MEDIATION',      // In mediation phase
-      'IN_ARBITRATION',    // In arbitration phase
-      'RESOLVED',          // Final resolution made
-      'ESCALATED'          // Escalated to human review
+      'PENDING_FEE',        // Awaiting dispute fee payment
+      'PENDING_REVIEW',     // Awaiting initial review
+      'SELF_RESOLUTION',    // Parties attempting self-resolution
+      'IN_MEDIATION',       // In mediation phase
+      'IN_ARBITRATION',     // In arbitration phase
+      'AWAITING_OUTCOME',   // Resolution made, awaiting payment processing
+      'RESOLVED',           // Final resolution made and processed
+      'ESCALATED'           // Escalated to human review
     ),
-    defaultValue: 'PENDING_REVIEW'
-  },
-  resolutionPhase: {
-    type: DataTypes.ENUM('AUTO_REVIEW', 'MEDIATION', 'ARBITRATION'),
-    defaultValue: 'AUTO_REVIEW'
+    defaultValue: 'PENDING_FEE'
   },
   // For automated review results
   aiAnalysis: {
@@ -496,9 +495,21 @@ const Dispute = sequelize.define('Dispute', {
   messages: {
     type: DataTypes.TEXT // Store as JSON string array
   },
-  // Track dispute fee payment
-  disputeFeePaid: {
-    type: DataTypes.TEXT // Store as JSON string with byClient, byFreelancer, amount
+  // Dispute fee tracking
+  disputeFee: {
+    type: DataTypes.TEXT // Store as JSON string with clientFee, freelancerFee, totalAmount, status, paymentDetails
+  },
+  // Evidence submission tracking
+  evidenceSubmitted: {
+    type: DataTypes.TEXT // Store as JSON string with timestamps, submitter details
+  },
+  // Dispute timeline tracking
+  timeline: {
+    type: DataTypes.TEXT // Store as JSON string with phase transitions and timestamps
+  },
+  // Appeal tracking (for complex disputes)
+  appeal: {
+    type: DataTypes.TEXT // Store as JSON string with appeal details, status, decision
   },
   createdAt: {
     type: DataTypes.DATE,

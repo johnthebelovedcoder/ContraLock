@@ -36,8 +36,96 @@ router.post('/', authenticateToken, [
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    
+
     await createDispute(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Process dispute fee payment
+router.post('/:id/fee-payment', authenticateToken, [
+  body('paymentMethodId').optional().isString()
+], async (req, res, next) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    await processDisputeFee(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Submit evidence to a dispute
+router.post('/:id/evidence', authenticateToken, [
+  body('evidence').isArray(),
+  body('evidence.*.filename').optional().isString(),
+  body('evidence.*.url').optional().isURL(),
+  body('evidence.*.type').optional().isString(),
+  body('evidence.*.size').optional().isInt({ min: 1 })
+], async (req, res, next) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    await submitDisputeEvidence(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Submit dispute appeal
+router.post('/:id/appeal', authenticateToken, [
+  body('reason').trim().isLength({ min: 10, max: 1000 }),
+  body('evidence').optional().isArray(),
+  body('evidence.*.filename').optional().isString(),
+  body('evidence.*.url').optional().isURL()
+], async (req, res, next) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    await submitDisputeAppeal(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Review dispute appeal (admin/arbitrator only)
+router.post('/:id/appeal/review', authenticateToken, [
+  body('decision').isIn(['APPROVED', 'REJECTED']),
+  body('decisionReason').optional().trim().isLength({ max: 500 })
+], async (req, res, next) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    await reviewDisputeAppeal(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Assign arbitrator to dispute (admin only)
+router.post('/:id/assign-arbitrator', authenticateToken, [
+  body('arbitratorId').isMongoId()
+], async (req, res, next) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    await assignArbitrator(req, res, next);
   } catch (error) {
     next(error);
   }
@@ -52,7 +140,7 @@ router.post('/:id/messages', authenticateToken, [
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    
+
     await addDisputeMessage(req, res, next);
   } catch (error) {
     next(error);

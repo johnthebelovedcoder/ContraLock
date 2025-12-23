@@ -1,6 +1,6 @@
-# Delivault Monorepo Cleanup Report
+# ContraLock Monorepo Cleanup Report
 
-This document details the cleanup performed on the Delivault monorepo to remove unused and redundant files.
+This document details the cleanup performed on the ContraLock monorepo to remove unused and redundant files.
 
 ## Comprehensive Cleanup Performed
 

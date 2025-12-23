@@ -300,8 +300,8 @@ const emailJobProcessor = async (job) => {
     // Define email templates
     const templates = {
       welcome: {
-        subject: 'Welcome to Delivault!',
-        html: `<h1>Welcome ${data.firstName}!</h1><p>Thank you for joining Delivault. We're excited to have you on board.</p>`,
+        subject: 'Welcome to ContraLock!',
+        html: `<h1>Welcome ${data.firstName}!</h1><p>Thank you for joining ContraLock. We're excited to have you on board.</p>`,
       },
       paymentConfirmation: {
         subject: 'Payment Confirmation',
@@ -610,7 +610,7 @@ const UserController = {
       // Add welcome email to queue (non-blocking)
       await queueService.addJob('email', 'welcome_email', {
         to: user.email,
-        subject: 'Welcome to Delivault!',
+        subject: 'Welcome to ContraLock!',
         template: 'welcome',
         data: {
           firstName: user.firstName,

@@ -196,7 +196,7 @@ Internet
 5. **DDoS Protection**: Automatic mitigation
 6. **Compliance Ready**: SOC 2, GDPR ready
 
-This architecture enables Delivault to handle:
+This architecture enables ContraLock to handle:
 - High availability (99.99% uptime)
 - Horizontal scaling to millions of users
 - PCI DSS compliance for payments

@@ -128,7 +128,7 @@ class CryptoPaymentService {
           });
 
           // Handle partially funded crypto payments
-          // In Delivault context, we might want to hold until full amount is received
+          // In ContraLock context, we might want to hold until full amount is received
           break;
 
         case 'payment_intent.fully_funded':
@@ -196,8 +196,8 @@ class CryptoPaymentService {
 
   /**
    * Calculate fees for crypto payments
-   * In Delivault's model: 
-   * - Client pays 1.9% (added to contract value) 
+   * In ContraLock's model:
+   * - Client pays 1.9% (added to contract value)
    * - Freelancer pays 3.6% (deducted from release)
    * @param {number} amount - Base amount in USD
    * @returns {Object} Fee breakdown
@@ -242,7 +242,7 @@ class CryptoPaymentService {
    */
   async processCryptoDeposit(amount, projectId, clientId, customerId, currency = 'USD') {
     try {
-      // Calculate fees based on Delivault's split fee model
+      // Calculate fees based on ContraLock's split fee model
       // Note: fees are always in the base currency of the project
       const fees = this.calculateCryptoFees(amount);
 

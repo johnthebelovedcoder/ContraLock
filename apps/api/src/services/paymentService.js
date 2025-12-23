@@ -629,6 +629,88 @@ class PaymentService {
       throw error;
     }
   }
+
+  // Create dispute fee payment
+  async createDisputeFeePayment(amount, userId, description = 'Dispute fee payment', metadata = {}) {
+    try {
+      if (!amount || amount <= 0) {
+        throw new Error('Amount must be greater than 0');
+      }
+
+      if (!userId) {
+        throw new Error('User ID is required');
+      }
+
+      // Convert amount to smallest currency unit (cents for USD)
+      const amountInCents = Math.round(amount * 100);
+
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: amountInCents,
+        currency: 'usd',
+        description: description,
+        metadata: {
+          ...metadata,
+          userId: userId,
+          paymentType: 'dispute_fee',
+          createdAt: new Date().toISOString(),
+        },
+        capture_method: 'automatic', // Immediately capture funds
+        automatic_payment_methods: {
+          enabled: true,
+        },
+      });
+
+      logger.info('Dispute fee payment intent created successfully', {
+        paymentIntentId: paymentIntent.id,
+        amount: paymentIntent.amount,
+        currency: paymentIntent.currency,
+        userId: userId,
+      });
+
+      return paymentIntent;
+    } catch (error) {
+      await this.handleStripeError(error, 'createDisputeFeePayment');
+    }
+  }
+
+  // Refund dispute fee if needed
+  async refundDisputeFee(paymentIntentId, reason = 'dispute_fee_refund') {
+    try {
+      if (!paymentIntentId) {
+        throw new Error('Payment intent ID is required');
+      }
+
+      // First retrieve the payment intent to verify it exists
+      const paymentIntent = await this.retrievePaymentIntent(paymentIntentId);
+
+      // Check if the payment has been captured
+      if (paymentIntent.status !== 'succeeded') {
+        throw new Error(`Payment intent ${paymentIntentId} is not in a refundable state: ${paymentIntent.status}`);
+      }
+
+      // Create refund
+      const refund = await stripe.refunds.create({
+        payment_intent: paymentIntentId,
+        reason: reason,
+        metadata: {
+          originalPaymentIntent: paymentIntentId,
+          reason: reason,
+          createdAt: new Date().toISOString(),
+        },
+      });
+
+      logger.info('Dispute fee refund created successfully', {
+        refundId: refund.id,
+        paymentIntentId: refund.payment_intent,
+        amount: refund.amount,
+        reason: reason,
+      });
+
+      return refund;
+    } catch (error) {
+      await this.handleStripeError(error, 'refundDisputeFee');
+    }
+  }
 }
 
 module.exports = new PaymentService();

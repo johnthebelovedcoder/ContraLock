@@ -291,6 +291,7 @@ class AIService {
       // Check if dispute should be escalated to arbitration
       let shouldEscalate = false;
       let reason = '';
+      let escalationCriteria = [];
 
       // If there's already an AI analysis with low confidence scores, escalate
       if (dispute.aiAnalysis) {
@@ -299,38 +300,158 @@ class AIService {
 
         if (freelancerConfidence < 60 && clientConfidence < 60) {
           shouldEscalate = true;
-          reason = 'Low confidence in AI analysis for both parties';
+          escalationCriteria.push('Low confidence in AI analysis for both parties');
         }
       }
 
-      // If mediation has been ongoing for more than 48 hours without resolution, escalate
-      if (dispute.status === 'IN_MEDIATION' && dispute.mediator) {
-        const mediationStart = dispute.updatedAt;
-        if (mediationStart && (Date.now() - new Date(mediationStart).getTime()) > 48 * 60 * 60 * 1000) {
+      // If self-resolution phase exceeds 72 hours without resolution
+      if (dispute.status === 'SELF_RESOLUTION') {
+        const selfResolutionStart = this.findTimelineEntry(dispute.timeline, 'SELF_RESOLUTION');
+        if (selfResolutionStart && (Date.now() - new Date(selfResolutionStart.timestamp).getTime()) > 72 * 60 * 60 * 1000) {
           shouldEscalate = true;
-          reason = 'Mediation period exceeded 48 hours without resolution';
+          escalationCriteria.push('Self-resolution period exceeded 72 hours');
         }
       }
 
-      // If there are more than 5 messages in dispute without resolution
-      if (dispute.messages && dispute.messages.length > 5) {
+      // If mediation has been ongoing for more than 5 days without resolution
+      if (dispute.status === 'IN_MEDIATION') {
+        const mediationStart = this.findTimelineEntry(dispute.timeline, 'IN_MEDIATION');
+        if (mediationStart && (Date.now() - new Date(mediationStart.timestamp).getTime()) > 5 * 24 * 60 * 60 * 1000) {
+          shouldEscalate = true;
+          escalationCriteria.push('Mediation period exceeded 5 days');
+        }
+      }
+
+      // If there are more than 10 messages in dispute without resolution
+      if (dispute.messages && dispute.messages.length > 10) {
         shouldEscalate = true;
-        reason = 'High number of dispute messages without resolution';
+        escalationCriteria.push('High number of dispute messages without resolution');
+      }
+
+      // If evidence has been submitted by both parties but no resolution after 3 days
+      if (dispute.evidenceSubmitted &&
+          dispute.evidenceSubmitted.client?.submittedAt &&
+          dispute.evidenceSubmitted.freelancer?.submittedAt) {
+        const evidenceSubmittedTime = Math.max(
+          new Date(dispute.evidenceSubmitted.client.submittedAt).getTime(),
+          new Date(dispute.evidenceSubmitted.freelancer.submittedAt).getTime()
+        );
+        if ((Date.now() - evidenceSubmittedTime) > 3 * 24 * 60 * 60 * 1000) {
+          shouldEscalate = true;
+          escalationCriteria.push('No resolution after evidence submission by both parties for 3 days');
+        }
+      }
+
+      // If dispute amount is high ($5000+) and has been pending for 2 days
+      if (dispute.disputeFee && dispute.disputeFee.disputeAmount >= 500000) { // 500000 cents = $5000
+        const disputeCreationTime = new Date(dispute.createdAt).getTime();
+        if ((Date.now() - disputeCreationTime) > 2 * 24 * 60 * 60 * 1000) {
+          shouldEscalate = true;
+          escalationCriteria.push('High-value dispute pending for 2 days');
+        }
       }
 
       if (shouldEscalate) {
         dispute.status = 'IN_ARBITRATION';
-        dispute.resolutionPhase = 'ARBITRATION';
+        if (!dispute.timeline) dispute.timeline = [];
+        dispute.timeline.push({
+          status: 'IN_ARBITRATION',
+          timestamp: new Date(),
+          note: `Escalated to arbitration: ${escalationCriteria.join(', ')}`,
+          reason: escalationCriteria.join(', ')
+        });
         await dispute.save();
+        reason = escalationCriteria.join(', ');
       }
 
       return {
         shouldEscalate,
         reason,
+        escalationCriteria,
         dispute
       };
     } catch (error) {
       console.error('AI escalation evaluation error:', error);
+      throw error;
+    }
+  }
+
+  // Find timeline entry by status
+  findTimelineEntry(timeline, status) {
+    if (!timeline || !Array.isArray(timeline)) return null;
+    return timeline.find(entry => entry.status === status);
+  }
+
+  // Enhanced dispute evaluation with multiple criteria
+  async evaluateDisputeForResolution(disputeId) {
+    try {
+      const dispute = await Dispute.findById(disputeId);
+
+      // Calculate various metrics for dispute evaluation
+      const metrics = {
+        ageInHours: (Date.now() - new Date(dispute.createdAt).getTime()) / (1000 * 60 * 60),
+        evidenceCount: dispute.evidence ? dispute.evidence.length : 0,
+        messageCount: dispute.messages ? dispute.messages.length : 0,
+        hasMediator: !!dispute.mediator,
+        hasArbitrator: !!dispute.arbitrator,
+        disputeAmount: dispute.disputeFee ? dispute.disputeFee.disputeAmount : 0,
+        clientEvidenceSubmitted: !!(dispute.evidenceSubmitted?.client?.submittedAt),
+        freelancerEvidenceSubmitted: !!(dispute.evidenceSubmitted?.freelancer?.submittedAt)
+      };
+
+      // Determine appropriate next action based on metrics
+      let recommendation = {
+        action: 'continue_current_phase',
+        reason: 'Dispute is progressing normally',
+        timelineEstimate: 'Standard processing time',
+        priority: 'normal'
+      };
+
+      // High-priority cases
+      if (metrics.disputeAmount >= 1000000) { // $10,000+
+        recommendation = {
+          action: 'escalate_to_arbitration',
+          reason: 'High-value dispute requiring immediate attention',
+          timelineEstimate: '24-48 hours',
+          priority: 'high'
+        };
+      }
+      // Self-resolution timeout
+      else if (dispute.status === 'SELF_RESOLUTION' && metrics.ageInHours > 72) {
+        recommendation = {
+          action: 'escalate_to_mediation',
+          reason: 'Self-resolution timeout',
+          timelineEstimate: 'Mediation within 24 hours',
+          priority: 'medium'
+        };
+      }
+      // Mediation timeout
+      else if (dispute.status === 'IN_MEDIATION' && metrics.ageInHours > 120) { // 5 days
+        recommendation = {
+          action: 'escalate_to_arbitration',
+          reason: 'Mediation timeout',
+          timelineEstimate: 'Arbitration within 48 hours',
+          priority: 'medium'
+        };
+      }
+      // Evidence submitted but no progress
+      else if (metrics.clientEvidenceSubmitted && metrics.freelancerEvidenceSubmitted &&
+               metrics.ageInHours > 72 && dispute.status === 'PENDING_REVIEW') {
+        recommendation = {
+          action: 'move_to_mediation',
+          reason: 'Both parties submitted evidence, moving to mediation',
+          timelineEstimate: 'Mediation starts within 24 hours',
+          priority: 'normal'
+        };
+      }
+
+      return {
+        metrics,
+        recommendation,
+        dispute
+      };
+    } catch (error) {
+      console.error('Dispute evaluation error:', error);
       throw error;
     }
   }

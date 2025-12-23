@@ -1,5 +1,7 @@
 import { Message, Conversation, Dispute, DisputeResolution } from '@/types';
 import { apiClient } from './client';
+import { mockDisputeService } from '../lib/mock-dispute-service';
+import { isMockMode } from '@/config/app-config';
 
 export interface SendMessageData {
   projectId: string;
@@ -146,25 +148,40 @@ class MessagingService {
       evidence?: File[];
     }
   ): Promise<Dispute> {
+    if (isMockMode) {
+      return await mockDisputeService.createDispute({
+        ...disputeData,
+        milestone: milestoneId
+      });
+    }
+
     const formData = new FormData();
     formData.append('title', disputeData.title);
     formData.append('description', disputeData.description);
-    
+
     disputeData.evidence?.forEach((file, index) => {
       formData.append(`evidence[${index}]`, file);
     });
 
-    const response = await apiClient.post(`/messaging/disputes/milestones/${milestoneId}`, formData, {
+    const response = await apiClient.post(`/disputes`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     });
-    
+
     return response.data;
   }
 
   async getDisputeById(disputeId: string): Promise<Dispute> {
-    const response = await apiClient.get(`/messaging/disputes/${disputeId}`);
+    if (isMockMode) {
+      const dispute = await mockDisputeService.getDisputeById(disputeId);
+      if (!dispute) {
+        throw new Error('Dispute not found');
+      }
+      return dispute;
+    }
+
+    const response = await apiClient.get(`/disputes/${disputeId}`);
     return response.data;
   }
 
@@ -174,6 +191,10 @@ class MessagingService {
     page: number = 1,
     limit: number = 20
   ): Promise<Dispute[]> {
+    if (isMockMode) {
+      return await mockDisputeService.getUserDisputes(userId, status);
+    }
+
     const params = new URLSearchParams({
       userId,
       page: page.toString(),
@@ -184,7 +205,7 @@ class MessagingService {
       params.append('status', status);
     }
 
-    const response = await apiClient.get(`/messaging/disputes?${params.toString()}`);
+    const response = await apiClient.get(`/disputes?${params.toString()}`);
     // Handle both paginated response (with items) and direct array response
     if (response.data && Array.isArray(response.data)) {
       return response.data;
@@ -196,7 +217,15 @@ class MessagingService {
   }
 
   async getDisputeResolution(disputeId: string): Promise<DisputeResolution> {
-    const response = await apiClient.get(`/messaging/disputes/${disputeId}/resolution`);
+    if (isMockMode) {
+      const dispute = await mockDisputeService.getDisputeById(disputeId);
+      if (!dispute || !dispute.resolution) {
+        throw new Error('Dispute resolution not found');
+      }
+      return dispute.resolution as DisputeResolution;
+    }
+
+    const response = await apiClient.get(`/disputes/${disputeId}/resolution`);
     return response.data;
   }
 
@@ -207,14 +236,19 @@ class MessagingService {
       files: File[];
     }
   ): Promise<void> {
+    if (isMockMode) {
+      await mockDisputeService.submitEvidence(disputeId, evidence);
+      return;
+    }
+
     const formData = new FormData();
     formData.append('description', evidence.description);
-    
+
     evidence.files.forEach((file, index) => {
       formData.append(`files[${index}]`, file);
     });
 
-    await apiClient.post(`/messaging/disputes/${disputeId}/evidence`, formData, {
+    await apiClient.post(`/disputes/${disputeId}/evidence`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -226,12 +260,32 @@ class MessagingService {
     page: number = 1,
     limit: number = 50
   ): Promise<Message[]> {
+    if (isMockMode) {
+      const dispute = await mockDisputeService.getDisputeById(disputeId);
+      if (!dispute || !dispute.messages) {
+        return [];
+      }
+      // Convert dispute messages to Message format
+      return dispute.messages.map((msg, index) => ({
+        id: `msg-${index}`,
+        projectId: dispute.project as string,
+        senderId: typeof msg.sender === 'string' ? msg.sender : (msg.sender as any).id || 'unknown',
+        senderRole: 'client', // Default role, would need more logic in real implementation
+        content: msg.content,
+        type: 'TEXT',
+        status: 'READ',
+        sentAt: new Date(msg.sentAt),
+        createdAt: new Date(msg.sentAt),
+        updatedAt: new Date(msg.sentAt)
+      }));
+    }
+
     const params = new URLSearchParams({
       page: page.toString(),
       limit: limit.toString(),
     });
-    
-    const response = await apiClient.get(`/messaging/disputes/${disputeId}/messages?${params.toString()}`);
+
+    const response = await apiClient.get(`/disputes/${disputeId}/messages?${params.toString()}`);
     return response.data;
   }
 
@@ -242,35 +296,168 @@ class MessagingService {
       attachments?: File[];
     }
   ): Promise<Message> {
+    if (isMockMode) {
+      // In mock mode, we'll add the message to the dispute
+      const dispute = await mockDisputeService.getDisputeById(disputeId);
+      if (!dispute) {
+        throw new Error('Dispute not found');
+      }
+
+      // Return a mock message
+      return {
+        id: `msg-${Date.now()}`,
+        projectId: dispute.project as string,
+        senderId: 'current-user', // Would be actual user ID in real implementation
+        senderRole: 'client', // Would be determined in real implementation
+        content: messageData.content,
+        type: 'TEXT',
+        status: 'READ',
+        sentAt: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+    }
+
     const formData = new FormData();
     formData.append('content', messageData.content);
-    
+
     messageData.attachments?.forEach((file, index) => {
       formData.append(`attachments[${index}]`, file);
     });
 
-    const response = await apiClient.post(`/messaging/disputes/${disputeId}/messages`, formData, {
+    const response = await apiClient.post(`/disputes/${disputeId}/messages`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     });
-    
+
     return response.data;
   }
 
   // New enhanced dispute methods
   async triggerDisputeAIReview(disputeId: string): Promise<any> {
-    const response = await apiClient.post(`/messaging/disputes/${disputeId}/review-automated`);
+    if (isMockMode) {
+      // In mock mode, we'll simulate an AI review by updating the dispute with AI analysis
+      const dispute = await mockDisputeService.getDisputeById(disputeId);
+      if (!dispute) {
+        throw new Error('Dispute not found');
+      }
+
+      // Return a mock AI analysis
+      return {
+        confidenceScore: 0.85,
+        keyIssues: ['Issue 1', 'Issue 2'],
+        recommendedResolution: 'RECOMMENDATION',
+        reasoning: 'Mock AI analysis completed',
+        disputeId
+      };
+    }
+
+    const response = await apiClient.post(`/disputes/${disputeId}/review-automated`);
     return response.data;
   }
 
   async evaluateDisputeEscalation(disputeId: string): Promise<any> {
-    const response = await apiClient.post(`/messaging/disputes/${disputeId}/evaluate-escalation`);
+    if (isMockMode) {
+      // In mock mode, return a mock escalation evaluation
+      return {
+        shouldEscalate: Math.random() > 0.5, // Random decision for mock
+        reason: 'Mock escalation evaluation',
+        disputeId
+      };
+    }
+
+    const response = await apiClient.post(`/disputes/${disputeId}/evaluate-escalation`);
     return response.data;
   }
 
   async getDisputeReport(disputeId: string): Promise<any> {
-    const response = await apiClient.get(`/messaging/disputes/${disputeId}/report`);
+    if (isMockMode) {
+      // In mock mode, return a mock dispute report
+      return {
+        disputeId,
+        summary: 'Mock dispute report',
+        timeline: 'Mock timeline',
+        evidenceSummary: 'Mock evidence summary',
+        recommendations: 'Mock recommendations'
+      };
+    }
+
+    const response = await apiClient.get(`/disputes/${disputeId}/report`);
+    return response.data;
+  }
+
+  // Process dispute fee payment
+  async processDisputeFee(disputeId: string, paymentMethodId?: string): Promise<any> {
+    if (isMockMode) {
+      return await mockDisputeService.payDisputeFee(disputeId);
+    }
+
+    const response = await apiClient.post(`/disputes/${disputeId}/fee-payment`, {
+      paymentMethodId: paymentMethodId
+    });
+    return response.data;
+  }
+
+  // Submit dispute appeal
+  async submitDisputeAppeal(
+    disputeId: string,
+    appealData: {
+      reason: string;
+      evidence?: File[];
+    }
+  ): Promise<Dispute> {
+    if (isMockMode) {
+      return await mockDisputeService.submitAppeal(disputeId, appealData);
+    }
+
+    const formData = new FormData();
+    formData.append('reason', appealData.reason);
+
+    appealData.evidence?.forEach((file, index) => {
+      formData.append(`evidence[${index}]`, file);
+    });
+
+    const response = await apiClient.post(`/disputes/${disputeId}/appeal`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    return response.data;
+  }
+
+  // Review dispute appeal (admin/arbitrator only)
+  async reviewDisputeAppeal(
+    disputeId: string,
+    reviewData: {
+      decision: 'APPROVED' | 'REJECTED';
+      decisionReason: string;
+    }
+  ): Promise<Dispute> {
+    if (isMockMode) {
+      // In mock mode, we'll update the dispute status based on the review
+      const dispute = await mockDisputeService.getDisputeById(disputeId);
+      if (!dispute) {
+        throw new Error('Dispute not found');
+      }
+
+      return {
+        ...dispute,
+        status: reviewData.decision === 'APPROVED' ? 'PENDING_REVIEW' : 'RESOLVED',
+        resolution: {
+          decision: reviewData.decision,
+          amountToFreelancer: 0,
+          amountToClient: 0,
+          decisionReason: reviewData.decisionReason,
+          decidedBy: 'mock-admin',
+          decidedAt: new Date().toISOString(),
+          aiRecommended: false
+        }
+      } as Dispute;
+    }
+
+    const response = await apiClient.post(`/disputes/${disputeId}/appeal/review`, reviewData);
     return response.data;
   }
 }

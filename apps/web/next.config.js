@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  transpilePackages: ["@delivault/ui", "@delivault/types"],
+  transpilePackages: ["@contralock/ui", "@contralock/types"],
   images: {
     domains: ["lh3.googleusercontent.com", "avatars.githubusercontent.com"],
   },

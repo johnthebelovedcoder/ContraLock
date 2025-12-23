@@ -171,7 +171,7 @@
 - Suggest resolution if clear-cut
 
 *Phase 2: Mediation (24-48 hours)*
-- Assign neutral mediator from Delivault team
+- Assign neutral mediator from ContraLock team
 - Both parties submit additional evidence
 - Mediator facilitates discussion
 - Attempt mutual resolution
@@ -187,7 +187,7 @@
 - Decision rationale documented
 
 **Arbitrator Panel**
-- Industry experts vetted by Delivault
+- Industry experts vetted by ContraLock
 - Rated by users after each case
 - Compensated per case resolved
 - Specialized by project type
@@ -316,7 +316,7 @@
 - Escrow payment (credit card only)
 - Manual milestone approval
 - Basic messaging
-- Manual dispute resolution (by Delivault team)
+- Manual dispute resolution (by ContraLock team)
 
 **Target:** 50 beta users, 100 transactions
 
@@ -680,7 +680,7 @@
 - Upwork: Built-in escrow but high fees (10-20%), locked to platform
 - Escrow.com: General escrow, not freelance-optimized, 3.25% fees
 - Fiverr: Limited to their marketplace, poor dispute resolution
-- **Delivault Advantage:** Lower fees, standalone service, transparent disputes, milestone flexibility
+- **ContraLock Advantage:** Lower fees, standalone service, transparent disputes, milestone flexibility
 
 ### User Research Needed
 - Survey 100+ freelancers on payment pain points

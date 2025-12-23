@@ -1,8 +1,8 @@
-# Delivault Error Handling System Documentation
+# ContraLock Error Handling System Documentation
 
 ## Overview
 
-The Delivault error handling system provides comprehensive error management for both frontend and backend applications. It consists of structured error classes, middleware for automatic error processing, user-friendly error display components, and unified error handling utilities.
+The ContraLock error handling system provides comprehensive error management for both frontend and backend applications. It consists of structured error classes, middleware for automatic error processing, user-friendly error display components, and unified error handling utilities.
 
 ## Architecture
 
@@ -270,4 +270,4 @@ Error handling is tested with:
 - Structured logging enables easy parsing and analysis
 - Development mode includes stack traces
 
-This comprehensive error handling system ensures consistency, improves user experience, and simplifies debugging across the Delivault application.
+This comprehensive error handling system ensures consistency, improves user experience, and simplifies debugging across the ContraLock application.

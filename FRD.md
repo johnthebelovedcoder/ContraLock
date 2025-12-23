@@ -13,10 +13,10 @@
 ## 1. Introduction
 
 ### 1.1 Purpose
-This Functional Requirements Document (FRD) defines the detailed functional specifications for Delivault, a milestone-based escrow platform for freelance payments. It serves as a blueprint for the development team and provides a comprehensive understanding of what the system must do.
+This Functional Requirements Document (FRD) defines the detailed functional specifications for ContraLock, a milestone-based escrow platform for freelance payments. It serves as a blueprint for the development team and provides a comprehensive understanding of what the system must do.
 
 ### 1.2 Scope
-This document covers all functional requirements for the MVP and subsequent phases of Delivault, including:
+This document covers all functional requirements for the MVP and subsequent phases of ContraLock, including:
 - User management and authentication
 - Project and milestone management
 - Payment processing and escrow
@@ -43,7 +43,7 @@ This document covers all functional requirements for the MVP and subsequent phas
 ## 2. System Overview
 
 ### 2.1 System Architecture
-Delivault consists of:
+ContraLock consists of:
 - Web application (client-facing)
 - Mobile application (Phase 2)
 - RESTful API backend
@@ -339,7 +339,7 @@ Delivault consists of:
 - **Description:** Client invites freelancer to project
 - **Actors:** Client
 - **Preconditions:** Project status is "DRAFT"
-- **Input:** Freelancer email or Delivault username
+- **Input:** Freelancer email or ContraLock username
 - **Process:**
   1. Client completes project setup
   2. Client clicks "Invite Freelancer"
@@ -670,7 +670,7 @@ Delivault consists of:
   - Technical error: "Payment failed. You have not been charged. Please try again"
 - **Business Rules:**
   - Full amount must be deposited before work begins
-  - Funds held in Delivault's Stripe account (or bank escrow account)
+  - Funds held in ContraLock's Stripe account (or bank escrow account)
   - Funds cannot be withdrawn once deposited (except via milestone approval or refund)
 
 **FR-PAY-002: Payment Method Management**

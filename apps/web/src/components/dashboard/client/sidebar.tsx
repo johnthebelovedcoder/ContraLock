@@ -42,7 +42,7 @@ export function Sidebar() {
   return (
     <div className="w-64 bg-background border-r border-border flex flex-col h-full">
       <div className="p-4 border-b border-border">
-        <h1 className="text-xl font-bold text-foreground">Delivault</h1>
+        <h1 className="text-xl font-bold text-foreground">ContraLock</h1>
         <p className="text-sm text-muted-foreground">Client Dashboard</p>
       </div>
 

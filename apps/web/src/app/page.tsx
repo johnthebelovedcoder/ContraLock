@@ -6,7 +6,7 @@ export default function HomePage() {
     <div className="min-h-screen flex items-center justify-center bg-muted p-4">
       <div className="max-w-md w-full text-center space-y-6">
         <div>
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">Delivault</h1>
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">ContraLock</h1>
           <p className="mt-2 text-base sm:text-lg text-muted-foreground">Secure Freelance Escrow Platform</p>
         </div>
 

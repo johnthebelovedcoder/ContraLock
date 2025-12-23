@@ -485,7 +485,7 @@ class EnhancedEmailService {
       milestone: milestone,
       amount: amount,
       dashboardLink: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/dashboard`,
-      siteName: 'Delivault',
+      siteName: 'ContraLock',
       year: new Date().getFullYear()
     };
 

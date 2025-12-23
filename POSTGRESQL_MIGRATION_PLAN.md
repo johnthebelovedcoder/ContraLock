@@ -54,13 +54,13 @@ DB_TYPE=postgresql  # or sqlite for development
 # PostgreSQL Configuration
 DB_HOST=localhost
 DB_PORT=5432
-DB_NAME=delivault
-DB_USER=delivault_user
+DB_NAME=contralock
+DB_USER=contralock_user
 DB_PASS=your_secure_password
 DB_SSL=false
 
 # SQLite Configuration (for development)
-DB_PATH=./data/delivault.sqlite
+DB_PATH=./data/contralock.sqlite
 ```
 
 **Updated Database Configuration File** (apps/api/src/config/database.js):
@@ -74,8 +74,8 @@ const getDatabaseConfig = () => {
       dialect: 'postgres',
       host: process.env.DB_HOST || 'localhost',
       port: process.env.DB_PORT || 5432,
-      database: process.env.DB_NAME || 'delivault',
-      username: process.env.DB_USER || 'delivault_user',
+      database: process.env.DB_NAME || 'contralock',
+      username: process.env.DB_USER || 'contralock_user',
       password: process.env.DB_PASS || 'your_secure_password',
       ssl: process.env.DB_SSL === 'true',
       logging: process.env.NODE_ENV === 'development' ? console.log : false,
@@ -90,7 +90,7 @@ const getDatabaseConfig = () => {
     // Fallback to SQLite for development
     return {
       dialect: 'sqlite',
-      storage: process.env.DB_PATH || './data/delivault.sqlite',
+      storage: process.env.DB_PATH || './data/contralock.sqlite',
       logging: process.env.NODE_ENV === 'development' ? console.log : false
     };
   }
@@ -307,7 +307,7 @@ const { Sequelize, DataTypes } = require('sequelize');
 // Configuration for SQLite (source)
 const sqliteConfig = {
   dialect: 'sqlite',
-  storage: './data/delivault.sqlite',
+  storage: './data/contralock.sqlite',
   logging: false
 };
 
@@ -316,8 +316,8 @@ const postgresConfig = {
   dialect: 'postgres',
   host: process.env.DB_HOST || 'localhost',
   port: process.env.DB_PORT || 5432,
-  database: process.env.DB_NAME || 'delivault',
-  username: process.env.DB_USER || 'delivault_user',
+  database: process.env.DB_NAME || 'contralock',
+  username: process.env.DB_USER || 'contralock_user',
   password: process.env.DB_PASS || 'your_secure_password',
   logging: console.log
 };
@@ -466,8 +466,8 @@ class DatabaseFactory {
           dialect: 'postgres',
           host: process.env.DB_HOST || 'localhost',
           port: process.env.DB_PORT || 5432,
-          database: process.env.DB_NAME || 'delivault',
-          username: process.env.DB_USER || 'delivault_user',
+          database: process.env.DB_NAME || 'contralock',
+          username: process.env.DB_USER || 'contralock_user',
           password: process.env.DB_PASS || 'your_secure_password',
           ssl: process.env.DB_SSL === 'true',
           logging: (query) => {
@@ -496,7 +496,7 @@ class DatabaseFactory {
       default:
         sequelizeConfig = {
           dialect: 'sqlite',
-          storage: process.env.DB_PATH || './data/delivault.sqlite',
+          storage: process.env.DB_PATH || './data/contralock.sqlite',
           logging: (query) => {
             if (process.env.LOG_QUERIES === 'true') {
               logger.info(query);
@@ -626,7 +626,7 @@ describe('Database Integration', () => {
 
 echo "Starting database rollback..."
 docker-compose down
-cp backup/delivault.sqlite data/delivault.sqlite
+cp backup/contralock.sqlite data/contralock.sqlite
 export DB_TYPE=sqlite
 echo "Database rolled back to SQLite. Please restart application services."
 ```

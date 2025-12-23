@@ -1,6 +1,6 @@
-# Delivault AI Service
+# ContraLock AI Service
 
-This service handles all AI-powered features for the Delivault platform as described in the PRD.
+This service handles all AI-powered features for the ContraLock platform as described in the PRD.
 
 ## Features
 - Smart milestone generation based on project descriptions

@@ -81,7 +81,7 @@ describe('Email Notification System', () => {
       expect(sendMailSpy).toHaveBeenCalled();
       const callArgs = sendMailSpy.mock.calls[0][0];
       expect(callArgs.to).toBe('test@example.com');
-      expect(callArgs.subject).toBe('Welcome to Delivault!');
+      expect(callArgs.subject).toBe('Welcome to ContraLock!');
       expect(callArgs.html).toContain('John');
     });
   });

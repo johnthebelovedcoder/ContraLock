@@ -45,7 +45,16 @@ import { ViewToggle } from '@/components/common/ViewToggle';
 import { useViewToggle } from '@/hooks/useViewToggle';
 
 // Define types for dispute data
-type DisputeStatus = 'OPEN' | 'AUTOMATED_REVIEW' | 'MEDIATION' | 'ARBITRATION' | 'RESOLVED';
+type DisputeStatus =
+  | 'PENDING_FEE'        // Awaiting dispute fee payment
+  | 'PENDING_REVIEW'     // Awaiting initial review
+  | 'SELF_RESOLUTION'    // Parties attempting self-resolution
+  | 'IN_MEDIATION'       // In mediation phase
+  | 'IN_ARBITRATION'     // In arbitration phase
+  | 'AWAITING_OUTCOME'   // Resolution made, awaiting payment processing
+  | 'RESOLVED'           // Final resolution made and processed
+  | 'ESCALATED';         // Escalated to human review
+
 type DisputeTypeInternal = 'MILESTONE' | 'CONTRACT' | 'PAYMENT' | 'QUALITY' | 'TIMELINE';
 
 interface DisputeInternal {
@@ -68,6 +77,40 @@ interface DisputeInternal {
   mediatorRating?: number;
   arbitratorDecision?: string;
   timeline: DisputeEvent[];
+  // New fields for enhanced functionality
+  disputeFee?: {
+    clientFee: number;
+    freelancerFee: number;
+    totalAmount: number;
+    status: 'PENDING' | 'PAID' | 'FAILED';
+    disputeAmount: number;
+    clientFeePaid?: boolean;
+    freelancerFeePaid?: boolean;
+    clientPaymentId?: string;
+    freelancerPaymentId?: string;
+  };
+  evidenceSubmittedDetails?: {
+    client: {
+      submittedAt?: Date;
+      evidenceCount: number;
+    };
+    freelancer: {
+      submittedAt?: Date;
+      evidenceCount: number;
+    };
+  };
+  appeal?: {
+    id: string;
+    reason: string;
+    evidence: any[];
+    submittedBy: string;
+    submittedAt: Date;
+    status: 'PENDING_REVIEW' | 'APPROVED' | 'REJECTED';
+    reviewer?: string;
+    reviewedAt?: Date;
+    decision?: string;
+    decisionReason?: string;
+  };
 }
 
 interface DisputeEvent {
@@ -93,6 +136,9 @@ export function DisputeContent({ userType }: DisputeContentProps) {
   const [openDisputes, setOpenDisputes] = useState<DisputeInternal[]>([]);
   const [resolvedDisputes, setResolvedDisputes] = useState<DisputeInternal[]>([]);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showDisputeFeeModal, setShowDisputeFeeModal] = useState(false);
+  const [showEvidenceModal, setShowEvidenceModal] = useState(false);
+  const [showAppealModal, setShowAppealModal] = useState(false);
   const [newDispute, setNewDispute] = useState({
     title: '',
     description: '',
@@ -102,6 +148,8 @@ export function DisputeContent({ userType }: DisputeContentProps) {
   });
   const [evidenceDescription, setEvidenceDescription] = useState('');
   const [evidenceFiles, setEvidenceFiles] = useState<File[]>([]);
+  const [appealReason, setAppealReason] = useState('');
+  const [appealFiles, setAppealFiles] = useState<File[]>([]);
   const { currentView, toggleView } = useViewToggle({
     storageKey: `${userType}-disputes-view`
   });
@@ -288,7 +336,7 @@ export function DisputeContent({ userType }: DisputeContentProps) {
   };
 
   // Handle submitting evidence
-  const handleSubmitEvidence = async (disputeId: string, description: string) => {
+  const handleSubmitEvidenceOld = async (disputeId: string, description: string) => {
     try {
       await messagingService.submitDisputeEvidence(disputeId, {
         description,
@@ -312,6 +360,120 @@ export function DisputeContent({ userType }: DisputeContentProps) {
   // Handle rating mediator
   const handleRateMediator = (disputeId: string, rating: number) => {
     console.log(`Rating mediator for dispute ${disputeId}: ${rating}`);
+  };
+
+  // Handle dispute fee payment
+  const handlePayDisputeFee = (disputeId: string) => {
+    setShowDisputeFeeModal(true);
+  };
+
+  // Process dispute fee payment
+  const processDisputeFeePayment = async (disputeId: string) => {
+    try {
+      // In a real app, this would call the API to process the fee payment
+      // For now, we'll simulate the call
+      await messagingService.processDisputeFee(disputeId);
+
+      // Update the dispute in the local state
+      const updatedDisputes = disputes.map(dispute =>
+        dispute.id === disputeId
+          ? { ...dispute, status: 'PENDING_REVIEW', disputeFee: { ...dispute.disputeFee, status: 'PAID' } }
+          : dispute
+      );
+
+      // Update the selected dispute if it's the one being viewed
+      if (selectedDispute && selectedDispute.id === disputeId) {
+        setSelectedDispute({
+          ...selectedDispute,
+          status: 'PENDING_REVIEW',
+          disputeFee: { ...selectedDispute.disputeFee, status: 'PAID' }
+        });
+      }
+
+      setShowDisputeFeeModal(false);
+      alert('Dispute fee paid successfully!');
+    } catch (error) {
+      console.error('Error processing dispute fee:', error);
+      alert('Failed to process dispute fee. Please try again.');
+    }
+  };
+
+  // Handle evidence file change
+  const handleEvidenceFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setEvidenceFiles(Array.from(e.target.files));
+    }
+  };
+
+  // Submit evidence to dispute
+  const handleModalSubmitEvidence = async () => {
+    if (!selectedDispute) return;
+
+    try {
+      // In a real app, this would call the API to submit evidence
+      await messagingService.submitDisputeEvidence(selectedDispute.id, {
+        description: evidenceDescription,
+        evidence: evidenceFiles
+      });
+
+      // Reset form and close modal
+      setEvidenceDescription('');
+      setEvidenceFiles([]);
+      setShowEvidenceModal(false);
+      alert('Evidence submitted successfully!');
+    } catch (error) {
+      console.error('Error submitting evidence:', error);
+      alert('Failed to submit evidence. Please try again.');
+    }
+  };
+
+  // Handle appeal file change
+  const handleAppealFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setAppealFiles(Array.from(e.target.files));
+    }
+  };
+
+  // Submit appeal for dispute
+  const handleSubmitAppeal = async () => {
+    if (!selectedDispute) return;
+
+    if (!appealReason || appealReason.trim().length < 10) {
+      alert('Please provide a reason for your appeal (at least 10 characters)');
+      return;
+    }
+
+    try {
+      // In a real app, this would call the API to submit appeal
+      await messagingService.submitDisputeAppeal(selectedDispute.id, {
+        reason: appealReason,
+        evidence: appealFiles
+      });
+
+      // Update the selected dispute with the appeal
+      if (selectedDispute) {
+        setSelectedDispute({
+          ...selectedDispute,
+          appeal: {
+            id: `appeal_${Date.now()}`,
+            reason: appealReason,
+            evidence: appealFiles.map(file => ({ filename: file.name, url: URL.createObjectURL(file) })),
+            submittedBy: user?.id || '',
+            submittedAt: new Date(),
+            status: 'PENDING_REVIEW'
+          }
+        });
+      }
+
+      // Reset form and close modal
+      setAppealReason('');
+      setAppealFiles([]);
+      setShowAppealModal(false);
+      alert('Appeal submitted successfully!');
+    } catch (error) {
+      console.error('Error submitting appeal:', error);
+      alert('Failed to submit appeal. Please try again.');
+    }
   };
 
   // Function to render the appropriate view based on selectedDispute state
@@ -409,14 +571,18 @@ export function DisputeContent({ userType }: DisputeContentProps) {
                         switch (dispute.status) {
                           case 'RESOLVED':
                             return 'success';
-                          case 'OPEN':
+                          case 'PENDING_FEE':
                             return 'destructive';
-                          case 'MEDIATION':
+                          case 'PENDING_REVIEW':
+                          case 'SELF_RESOLUTION':
                             return 'secondary';
-                          case 'ARBITRATION':
-                            return 'default';
-                          case 'AUTOMATED_REVIEW':
+                          case 'IN_MEDIATION':
                             return 'outline';
+                          case 'IN_ARBITRATION':
+                          case 'ESCALATED':
+                            return 'default';
+                          case 'AWAITING_OUTCOME':
+                            return 'secondary';
                           default:
                             return 'outline';
                         }
@@ -427,11 +593,20 @@ export function DisputeContent({ userType }: DisputeContentProps) {
                         switch (dispute.status) {
                           case 'RESOLVED':
                             return <CheckCircle className="h-4 w-4" />;
-                          case 'MEDIATION':
-                          case 'AUTOMATED_REVIEW':
+                          case 'PENDING_FEE':
+                            return <DollarSign className="h-4 w-4" />;
+                          case 'PENDING_REVIEW':
+                            return <Search className="h-4 w-4" />;
+                          case 'SELF_RESOLUTION':
+                            return <User className="h-4 w-4" />;
+                          case 'IN_MEDIATION':
                             return <Users className="h-4 w-4" />;
-                          case 'ARBITRATION':
+                          case 'IN_ARBITRATION':
                             return <Shield className="h-4 w-4" />;
+                          case 'AWAITING_OUTCOME':
+                            return <Clock className="h-4 w-4" />;
+                          case 'ESCALATED':
+                            return <AlertTriangle className="h-4 w-4" />;
                           default:
                             return <AlertTriangle className="h-4 w-4" />;
                         }
@@ -475,6 +650,15 @@ export function DisputeContent({ userType }: DisputeContentProps) {
                                     : 'Date unknown'}
                                 </span>
                               </div>
+                              {dispute.disputeFee && (
+                                <div className="flex items-center gap-2 text-muted-foreground">
+                                  <DollarSign className="h-4 w-4" />
+                                  <span>
+                                    Fee: ${(dispute.disputeFee.totalAmount / 100).toFixed(2)}
+                                    {dispute.disputeFee.status === 'PENDING' && dispute.status === 'PENDING_FEE' && ' (Pending)'}
+                                  </span>
+                                </div>
+                              )}
                             </div>
 
                             <p className="text-sm text-muted-foreground line-clamp-2">
@@ -860,7 +1044,7 @@ export function DisputeContent({ userType }: DisputeContentProps) {
                             }}
                             className="flex-1"
                           />
-                          <Button onClick={() => handleSubmitEvidence(selectedDispute.id, evidenceDescription)}>
+                          <Button onClick={() => handleSubmitEvidenceOld(selectedDispute.id, evidenceDescription)}>
                             <Upload className="h-4 w-4 mr-2" />
                             Submit Evidence
                           </Button>
@@ -965,31 +1149,149 @@ export function DisputeContent({ userType }: DisputeContentProps) {
 
               {/* Actions */}
               <div className="flex flex-wrap gap-3">
-                {userType === 'client' && selectedDispute.status === 'MEDIATION' && (
+                {/* Fee payment action */}
+                {selectedDispute.status === 'PENDING_FEE' && (
+                  <Button onClick={() => handlePayDisputeFee(selectedDispute.id)}>
+                    <DollarSign className="h-4 w-4 mr-2" />
+                    Pay Dispute Fee - ${(selectedDispute.disputeFee?.totalAmount ? selectedDispute.disputeFee.totalAmount / 100 : 0).toFixed(2)}
+                  </Button>
+                )}
+
+                {/* Mediation actions */}
+                {userType === 'client' && selectedDispute.status === 'IN_MEDIATION' && (
                   <Button onClick={() => handleJoinMediation(selectedDispute.id)}>
                     <MessageCircle className="h-4 w-4 mr-2" />
                     Join Mediation Session
                   </Button>
                 )}
 
-                {userType === 'client' && selectedDispute.status === 'ARBITRATION' && (
+                {/* Arbitration actions */}
+                {userType === 'client' && selectedDispute.status === 'IN_ARBITRATION' && (
                   <Button variant="outline">
-                    <FileText className="h-4 w-4 mr-2" />
+                    <Shield className="h-4 w-4 mr-2" />
                     View Arbitration Details
                   </Button>
                 )}
 
+                {/* Evidence submission */}
                 {userType === 'client' && selectedDispute.status !== 'RESOLVED' && (
-                  <Button variant="outline">
+                  <Button variant="outline" onClick={() => setShowEvidenceModal(true)}>
                     <FileText className="h-4 w-4 mr-2" />
-                    Submit Further Evidence
+                    Submit Evidence
                   </Button>
                 )}
 
+                {/* Appeal functionality */}
+                {userType === 'client' && selectedDispute.status === 'RESOLVED' && !selectedDispute.appeal && (
+                  <Button variant="secondary" onClick={() => setShowAppealModal(true)}>
+                    <AlertTriangle className="h-4 w-4 mr-2" />
+                    Submit Appeal
+                  </Button>
+                )}
+
+                {/* Back to list */}
                 <Button variant="outline" onClick={handleBackToList}>
                   Back to List
                 </Button>
               </div>
+
+              {/* Dispute Fee Payment Modal */}
+              {showDisputeFeeModal && selectedDispute && (
+                <Dialog open={showDisputeFeeModal} onOpenChange={setShowDisputeFeeModal}>
+                  <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                      <DialogTitle>Pay Dispute Fee</DialogTitle>
+                    </DialogHeader>
+                    <div className="py-4">
+                      <p className="mb-4">
+                        This dispute requires a fee of ${(selectedDispute.disputeFee?.totalAmount ? selectedDispute.disputeFee.totalAmount / 100 : 0).toFixed(2)} to proceed.
+                        Both client and freelancer must pay their portion.
+                      </p>
+                      <div className="flex flex-col gap-3">
+                        <div className="flex justify-between">
+                          <span>Your portion:</span>
+                          <span className="font-medium">
+                            ${(selectedDispute.disputeFee?.clientFee ? selectedDispute.disputeFee.clientFee / 100 : 0).toFixed(2)}
+                          </span>
+                        </div>
+                        <Button
+                          onClick={() => processDisputeFeePayment(selectedDispute.id)}
+                          className="w-full"
+                        >
+                          <DollarSign className="h-4 w-4 mr-2" />
+                          Pay Fee
+                        </Button>
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              )}
+
+              {/* Evidence Submission Modal */}
+              {showEvidenceModal && selectedDispute && (
+                <Dialog open={showEvidenceModal} onOpenChange={setShowEvidenceModal}>
+                  <DialogContent className="sm:max-w-lg">
+                    <DialogHeader>
+                      <DialogTitle>Submit Evidence</DialogTitle>
+                    </DialogHeader>
+                    <div className="py-4 space-y-4">
+                      <Textarea
+                        placeholder="Describe your evidence or concerns..."
+                        value={evidenceDescription}
+                        onChange={(e) => setEvidenceDescription(e.target.value)}
+                        className="w-full"
+                      />
+                      <div className="flex flex-col sm:flex-row gap-2">
+                        <Input
+                          type="file"
+                          multiple
+                          onChange={handleEvidenceFileChange}
+                          className="flex-1"
+                        />
+                        <Button onClick={handleModalSubmitEvidence}>
+                          <Upload className="h-4 w-4 mr-2" />
+                          Submit Evidence
+                        </Button>
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              )}
+
+              {/* Appeal Submission Modal */}
+              {showAppealModal && selectedDispute && (
+                <Dialog open={showAppealModal} onOpenChange={setShowAppealModal}>
+                  <DialogContent className="sm:max-w-lg">
+                    <DialogHeader>
+                      <DialogTitle>Submit Appeal</DialogTitle>
+                    </DialogHeader>
+                    <div className="py-4 space-y-4">
+                      <p className="text-sm text-muted-foreground">
+                        You can submit an appeal if you disagree with the resolution.
+                        Appeals must include new evidence or reasoning.
+                      </p>
+                      <Textarea
+                        placeholder="Explain why you believe the resolution was incorrect..."
+                        value={appealReason}
+                        onChange={(e) => setAppealReason(e.target.value)}
+                        className="w-full"
+                      />
+                      <div className="flex flex-col sm:flex-row gap-2">
+                        <Input
+                          type="file"
+                          multiple
+                          onChange={handleAppealFileChange}
+                          className="flex-1"
+                        />
+                        <Button onClick={handleSubmitAppeal}>
+                          <AlertTriangle className="h-4 w-4 mr-2" />
+                          Submit Appeal
+                        </Button>
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              )}
             </CardContent>
           </Card>
         </>

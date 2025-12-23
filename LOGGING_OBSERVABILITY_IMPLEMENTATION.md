@@ -1,7 +1,7 @@
 # Comprehensive Logging and Observability System Implementation
 
 ## Overview
-This document outlines the implementation of a comprehensive logging and observability system for the Delivault platform. The system will include enhanced logging with correlation IDs, error tracking with Sentry, performance monitoring, and structured observability metrics.
+This document outlines the implementation of a comprehensive logging and observability system for the ContraLock platform. The system will include enhanced logging with correlation IDs, error tracking with Sentry, performance monitoring, and structured observability metrics.
 
 ## Why Enhanced Logging & Observability?
 
@@ -43,7 +43,7 @@ const logFormat = winston.format.combine(
 const logger = winston.createLogger({
   level: process.env.LOG_LEVEL || 'info',
   format: logFormat,
-  defaultMeta: { service: 'delivault-api' },
+  defaultMeta: { service: 'contralock-api' },
   transports: [
     // Console transport for development
     new winston.transports.Console({
@@ -561,7 +561,7 @@ const healthController = {
       uptime: process.uptime(),
       message: 'OK',
       timestamp: new Date().toISOString(),
-      service: 'Delivault API',
+      service: 'ContraLock API',
       version: process.env.npm_package_version || 'development'
     };
 
@@ -1074,7 +1074,7 @@ const register = new client.Registry();
 // Add default metrics
 client.collectDefaultMetrics({
   register,
-  prefix: 'delivault_'
+  prefix: 'contralock_'
 });
 
 // Create custom metrics
