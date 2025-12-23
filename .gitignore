@@ -44,6 +44,7 @@ logs
 # Database
 *.db
 *.sqlite
+*.sqlite-journal
 
 # OS generated files
 .DS_Store
