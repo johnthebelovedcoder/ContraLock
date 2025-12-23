@@ -1,0 +1,20 @@
+<p>Hello {{freelancer.firstName}} {{freelancer.lastName}},</p>
+
+<div class="info-box">
+  <p>Congratulations! A payment has been released to your account for your work on "{{project.title}}".</p>
+</div>
+
+<div class="summary">
+  <h3>Payment Details:</h3>
+  <p><strong>Amount:</strong> {{formatCurrency amount}}</p>
+  <p><strong>Milestone:</strong> {{milestone.title}}</p>
+  <p><strong>Project:</strong> {{project.title}}</p>
+  <p><strong>Date Released:</strong> {{formatDate (date)}}</p>
+</div>
+
+<p>The funds are now available in your account. You can withdraw them or use them for other projects.</p>
+<p>Check your <a href="{{dashboardLink}}">dashboard</a> for full details.</p>
+
+<p>Thank you for your excellent work!</p>
+
+<p>Best regards,<br>The {{siteName}} Team</p>

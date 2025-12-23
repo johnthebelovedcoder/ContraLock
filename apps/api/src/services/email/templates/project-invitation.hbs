@@ -1,0 +1,20 @@
+<p>Hello {{freelancer.firstName}} {{freelancer.lastName}},</p>
+
+<p>You have been invited to join a project by {{client.firstName}} {{client.lastName}}:</p>
+
+<div class="summary">
+  <h3>{{project.title}}</h3>
+  <p><strong>Client:</strong> {{client.firstName}} {{client.lastName}}</p>
+  <p><strong>Budget:</strong> {{formatCurrency (divide project.budget 100)}}</p>
+  <p><strong>Deadline:</strong> {{formatDate project.deadline}}</p>
+  <p><strong>Description:</strong> {{project.description}}</p>
+</div>
+
+<p>To view and respond to this invitation:</p>
+
+<p><a href="{{acceptLink}}" class="button">View Project Invitation</a></p>
+
+<p>If you cannot click the button, copy and paste this link into your browser:</p>
+<p><a href="{{acceptLink}}">{{acceptLink}}</a></p>
+
+<p>Best regards,<br>The {{siteName}} Team</p>

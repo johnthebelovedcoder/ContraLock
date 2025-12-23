@@ -1,0 +1,182 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Untitled UI Color System - Professional Enterprise Palette */
+
+    /* Gray Scale (Neutral Base) */
+    --gray-1: 0 0% 99%;      /* Lightest */
+    --gray-2: 0 0% 97%;
+    --gray-3: 0 0% 94%;
+    --gray-4: 0 0% 92%;
+    --gray-5: 0 0% 89%;
+    --gray-6: 0 0% 85%;
+    --gray-7: 240 4% 46%;   /* Mid tone */
+    --gray-8: 240 5% 34%;
+    --gray-9: 240 5% 26%;
+    --gray-10: 240 6% 10%;  /* Darkest */
+
+    /* Primary Colors */
+    --primary: 220 95% 50%;       /* Professional blue */
+    --primary-hover: 220 90% 40%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Semantic Colors */
+    --success: 142 76% 36%;       /* Professional green */
+    --success-hover: 142 80% 30%;
+    --warning: 38 92% 50%;        /* Professional amber */
+    --warning-hover: 38 95% 45%;
+    --danger: 0 92% 50%;          /* Professional red */
+    --danger-hover: 0 95% 45%;
+
+    /* Component Colors */
+    --background: var(--gray-1);   /* Main background */
+    --foreground: var(--gray-10);  /* Main text */
+
+    --card: 0 0% 100%;            /* Card backgrounds */
+    --card-foreground: var(--gray-10);
+
+    --popover: 0 0% 100%;         /* Dropdown/popover backgrounds */
+    --popover-foreground: var(--gray-10);
+
+    --border: var(--gray-4);      /* Border color */
+    --input: var(--gray-4);       /* Input borders */
+    --ring: var(--primary);       /* Focus rings */
+
+    --secondary: var(--gray-3);   /* Secondary backgrounds */
+    --secondary-foreground: var(--gray-9);
+
+    --muted: var(--gray-2);       /* Muted backgrounds */
+    --muted-foreground: var(--gray-7);
+
+    --accent: var(--gray-2);      /* Accent backgrounds */
+    --accent-foreground: var(--gray-9);
+
+    --destructive: var(--danger);
+    --destructive-foreground: 0 0% 100%;
+
+    /* Radius */
+    --radius: 8px;                /* Medium rounded corners for consistency */
+    --radius-sm: 6px;
+    --radius-lg: 12px;
+
+    /* Spacing (Based on 4px scale) */
+    --spacing-1: 4px;
+    --spacing-2: 8px;
+    --spacing-3: 12px;
+    --spacing-4: 16px;
+    --spacing-5: 20px;
+    --spacing-6: 24px;
+    --spacing-7: 28px;
+    --spacing-8: 32px;
+    --spacing-10: 40px;
+    --spacing-12: 48px;
+    --spacing-16: 64px;
+
+    /* Typography */
+    --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-size-xs: 0.75rem;    /* 12px */
+    --font-size-sm: 0.875rem;   /* 14px */
+    --font-size-base: 1rem;     /* 16px */
+    --font-size-lg: 1.125rem;   /* 18px */
+    --font-size-xl: 1.25rem;    /* 20px */
+    --font-size-2xl: 1.5rem;    /* 24px */
+    --font-size-3xl: 1.875rem;  /* 30px */
+    --font-size-4xl: 2.25rem;   /* 36px */
+
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+
+    --line-height-tight: 1.25;
+    --line-height-snug: 1.375;
+    --line-height-normal: 1.5;
+    --line-height-relaxed: 1.625;
+  }
+
+  .dark {
+    /* Dark Mode Variants */
+    --gray-1: 240 10% 3%;
+    --gray-2: 240 8% 7%;
+    --gray-3: 240 7% 11%;
+    --gray-4: 240 6% 15%;
+    --gray-5: 240 6% 19%;
+    --gray-6: 240 5% 24%;
+    --gray-7: 240 5% 45%;
+    --gray-8: 240 6% 55%;
+    --gray-9: 240 7% 70%;
+    --gray-10: 0 0% 99%;
+
+    --background: var(--gray-1);
+    --foreground: var(--gray-10);
+
+    --card: var(--gray-2);
+    --card-foreground: var(--gray-10);
+
+    --popover: var(--gray-2);
+    --popover-foreground: var(--gray-10);
+
+    --border: var(--gray-4);
+    --input: var(--gray-4);
+
+    --secondary: var(--gray-3);
+    --secondary-foreground: var(--gray-10);
+
+    --muted: var(--gray-3);
+    --muted-foreground: var(--gray-7);
+
+    --accent: var(--gray-3);
+    --accent-foreground: var(--gray-10);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    @apply antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer utilities {
+  /* Focus styles for accessibility */
+  .focus-outline {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background;
+  }
+
+  /* Standard transitions */
+  .transition-standard {
+    @apply transition-all duration-200 ease-out;
+  }
+
+  /* Professional shadows */
+  .shadow-xs {
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  }
+
+  .shadow-sm {
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  }
+
+  .shadow {
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  }
+
+  .shadow-md {
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  }
+
+  .shadow-lg {
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  }
+
+  .shadow-card {
+    box-shadow: 0 0 0 1px hsla(var(--gray-6), 0.2), 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  }
+}

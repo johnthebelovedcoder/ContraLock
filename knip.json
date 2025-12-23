@@ -1,0 +1,27 @@
+{
+  "entry": ["apps/*/src/**/*.{js,ts,jsx,tsx}", "packages/*/src/**/*.{js,ts,jsx,tsx}"],
+  "project": ["**/*.{js,ts,jsx,tsx}"],
+  "ignore": [
+    "node_modules/**",
+    "dist/**",
+    "build/**",
+    ".next/**",
+    "coverage/**",
+    "apps/data/**",
+    "**/node_modules/**",
+    "pnpm-lock.yaml",
+    "*.min.js",
+    "**/test/**",
+    "**/__tests__/**",
+    "**/*.test.{js,ts,jsx,tsx}",
+    "**/*.spec.{js,ts,jsx,tsx}"
+  ],
+  "ignoreDependencies": [
+    "@types/node",
+    "@types/react",
+    "@types/react-dom",
+    "typescript"
+  ],
+  "ignoreBinaries": [],
+  "includeEntryExports": false
+}

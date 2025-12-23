@@ -1,0 +1,20 @@
+<p>Hello {{user.firstName}},</p>
+
+<p>A milestone in your project has been updated:</p>
+
+<div class="summary">
+  <h3><span class="status-badge" style="background-color: {{statusColor}};">{{status}}</span> {{milestone.title}}</h3>
+  <p><strong>Project:</strong> {{project.title}}</p>
+  <p><strong>Description:</strong> {{milestone.description}}</p>
+  <p><strong>Amount:</strong> {{formatCurrency (divide milestone.amount 100)}}</p>
+  <p><strong>Date:</strong> {{formatDate (date)}}</p>
+  {{#if message}}
+  <p><strong>Message:</strong> {{message}}</p>
+  {{/if}}
+</div>
+
+<p>You can view the full project details in your dashboard.</p>
+
+<p><a href="{{dashboardLink}}" class="button">View Project</a></p>
+
+<p>Best regards,<br>The {{siteName}} Team</p>

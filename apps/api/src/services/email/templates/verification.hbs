@@ -1,0 +1,16 @@
+<p>Hello {{user.firstName}} {{user.lastName}},</p>
+
+<div class="info-box">
+  <p>Thank you for registering with {{siteName}}. Please verify your email address by clicking the button below:</p>
+</div>
+
+<center><a href="{{verificationLink}}" class="button">Verify Email Address</a></center>
+
+<p>If you cannot click the button, copy and paste this link into your browser:</p>
+<p><a href="{{verificationLink}}">{{verificationLink}}</a></p>
+
+<p>This verification link will expire in 24 hours.</p>
+
+<p>If you did not create an account with {{siteName}}, please ignore this email.</p>
+
+<p>Best regards,<br>The {{siteName}} Team</p>

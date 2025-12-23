@@ -1,0 +1,21 @@
+<p>Hello {{user.firstName}},</p>
+
+<div class="info-box">
+  <p>We have successfully received your payment for the project <strong>"{{project.title}}"</strong>.</p>
+</div>
+
+<div class="summary">
+  <h3>Transaction Details:</h3>
+  <p><strong>Amount:</strong> {{formatCurrency amount}}</p>
+  <p><strong>Transaction ID:</strong> {{transactionId}}</p>
+  <p><strong>Project:</strong> {{project.title}}</p>
+  <p><strong>Date:</strong> {{formatDate (date)}}</p>
+</div>
+
+<p>The funds have been securely placed in escrow and will be released to the freelancer according to the milestone schedule.</p>
+
+<p>You can track the progress of this project in your dashboard.</p>
+
+<p><a href="{{dashboardLink}}" class="button">View Project</a></p>
+
+<p>Best regards,<br>The {{siteName}} Team</p>

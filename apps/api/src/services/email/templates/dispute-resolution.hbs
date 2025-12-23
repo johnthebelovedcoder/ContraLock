@@ -1,0 +1,26 @@
+<p>Hello {{user.firstName}},</p>
+
+<div class="info-box">
+  <p>The dispute for milestone "{{dispute.milestone.title}}" in project "{{project.title}}" has been resolved.</p>
+</div>
+
+<div class="summary">
+  <h3>Resolution Details:</h3>
+  <p><strong>Decision:</strong> {{resolution.decision}}</p>
+  {{#if resolution.amountToFreelancer}}
+  <p><strong>Amount to Freelancer:</strong> {{formatCurrency (divide resolution.amountToFreelancer 100)}}</p>
+  {{/if}}
+  {{#if resolution.amountToClient}}
+  <p><strong>Amount to Client:</strong> {{formatCurrency (divide resolution.amountToClient 100)}}</p>
+  {{/if}}
+  <p><strong>Reason:</strong> {{resolution.decisionReason}}</p>
+  <p><strong>Date:</strong> {{formatDate (date)}}</p>
+</div>
+
+{{#ifCond resolution.decision 'includes' 'payment'}}
+<p>The funds have been processed according to the resolution. Please note that it may take 1-3 business days for the payment to be finalized.</p>
+{{/ifCond}}
+
+<p>Questions? Contact our support team or visit your <a href="{{dashboardLink}}">dashboard</a>.</p>
+
+<p>Best regards,<br>The {{siteName}} Team</p>
