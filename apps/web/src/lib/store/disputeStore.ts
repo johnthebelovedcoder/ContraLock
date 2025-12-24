@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { Dispute } from '@/types';
 import { messagingService } from '../api/messagingService';
 import { projectService } from '../api/projectService';
-import { mockDisputeService } from '../lib/mock-dispute-service';
+import { mockDisputeService } from '../mock-dispute-service';
 import { isMockMode } from '@/config/app-config';
 
 interface DisputeState {

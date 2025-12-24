@@ -1,6 +1,6 @@
 import { Message, Conversation, Dispute, DisputeResolution } from '@/types';
 import { apiClient } from './client';
-import { mockDisputeService } from '../lib/mock-dispute-service';
+import { mockDisputeService } from '../mock-dispute-service';
 import { isMockMode } from '@/config/app-config';
 
 export interface SendMessageData {
