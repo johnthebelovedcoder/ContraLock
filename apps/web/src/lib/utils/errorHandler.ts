@@ -143,37 +143,44 @@ export const formatValidationErrors = (errors: any): string[] => {
 export const logError = (error: any, context?: string): void => {
   const errorInfo: Record<string, any> = {};
 
-  // Add basic error info
-  if (error && typeof error === 'object') {
-    if (error.message) errorInfo.message = error.message;
-    if (error.stack) errorInfo.stack = error.stack;
-    
-    // Add response data if available
-    if (error.response) {
-      errorInfo.response = {
-        status: error.response.status,
-        data: error.response.data,
-        headers: error.response.headers
-      };
+  try {
+    // Add basic error info
+    if (error && typeof error === 'object') {
+      if (error.message) errorInfo.message = error.message;
+      if (error.stack) errorInfo.stack = error.stack;
+
+      // Add response data if available
+      if (error.response) {
+        errorInfo.response = {
+          status: error.response.status,
+          data: error.response.data,
+          headers: error.response.headers
+        };
+      }
+
+      // Add request data if available
+      if (error.request || error.config) {
+        errorInfo.request = {
+          method: error.config?.method,
+          url: error.config?.url,
+          data: error.config?.data
+        };
+      }
+    } else {
+      // Handle non-object errors (strings, numbers, etc.)
+      errorInfo.message = String(error);
     }
 
-    // Add request data if available
-    if (error.request || error.config) {
-      errorInfo.request = {
-        method: error.config?.method,
-        url: error.config?.url,
-        data: error.config?.data
-      };
+    // Add timestamp and context
+    errorInfo.timestamp = new Date().toISOString();
+    if (context) {
+      errorInfo.context = context;
     }
-  } else {
-    // Handle non-object errors (strings, numbers, etc.)
-    errorInfo.message = String(error);
-  }
-
-  // Add timestamp and context
-  errorInfo.timestamp = new Date().toISOString();
-  if (context) {
-    errorInfo.context = context;
+  } catch (e) {
+    // If there's an error processing the error object, log a generic message
+    errorInfo.message = 'Error occurred while processing error object';
+    errorInfo.originalError = String(error);
+    errorInfo.processingError = String(e);
   }
 
   console.error(`[Error${context ? ` - ${context}` : ''}]`, errorInfo);
