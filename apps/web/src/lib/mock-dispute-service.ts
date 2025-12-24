@@ -4,7 +4,7 @@ import { getMockDisputes } from './mock-data';
 // Mock dispute service for the dispute page
 export class MockDisputeService {
   // Get all disputes for a user
-  static async getUserDisputes(userId: string, status?: string): Promise<Dispute[]> {
+  async getUserDisputes(userId: string, status?: string): Promise<Dispute[]> {
     // In a real app, this would make an API call
     // For now, return mock data filtered by user and status if provided
     let disputes = getMockDisputes();
@@ -25,7 +25,7 @@ export class MockDisputeService {
   }
 
   // Get a single dispute by ID
-  static async getDisputeById(disputeId: string): Promise<Dispute | null> {
+  async getDisputeById(disputeId: string): Promise<Dispute | null> {
     // In a real app, this would make an API call
     const disputes = getMockDisputes();
     const dispute = disputes.find(d => d._id === disputeId);
@@ -33,7 +33,7 @@ export class MockDisputeService {
   }
 
   // Create a new dispute
-  static async createDispute(disputeData: Partial<Dispute>): Promise<Dispute> {
+  async createDispute(disputeData: Partial<Dispute>): Promise<Dispute> {
     // In a real app, this would make an API call
     // For now, create a new dispute with mock data
     const newDispute: Dispute = {
@@ -65,7 +65,7 @@ export class MockDisputeService {
   }
 
   // Submit evidence for a dispute
-  static async submitEvidence(disputeId: string, evidenceData: any): Promise<Dispute> {
+  async submitEvidence(disputeId: string, evidenceData: any): Promise<Dispute> {
     // In a real app, this would make an API call
     const disputes = getMockDisputes();
     const dispute = disputes.find(d => d._id === disputeId);
@@ -101,7 +101,7 @@ export class MockDisputeService {
   }
 
   // Pay dispute fee
-  static async payDisputeFee(disputeId: string): Promise<Dispute> {
+  async payDisputeFee(disputeId: string): Promise<Dispute> {
     // In a real app, this would make an API call
     const disputes = getMockDisputes();
     const dispute = disputes.find(d => d._id === disputeId);
@@ -130,7 +130,7 @@ export class MockDisputeService {
   }
 
   // Submit appeal for a dispute
-  static async submitAppeal(disputeId: string, appealData: any): Promise<Dispute> {
+  async submitAppeal(disputeId: string, appealData: any): Promise<Dispute> {
     // In a real app, this would make an API call
     const disputes = getMockDisputes();
     const dispute = disputes.find(d => d._id === disputeId);
@@ -158,7 +158,7 @@ export class MockDisputeService {
   }
 
   // Get statistics for disputes
-  static async getDisputeStats(userId: string): Promise<{
+  async getDisputeStats(userId: string): Promise<{
     total: number;
     open: number;
     resolved: number;
